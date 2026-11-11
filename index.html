@@ -94,7 +94,7 @@ const CC={rg:'var(--ok)',rr:'var(--rd)',ry:'var(--yl)'};
 const GOOD=['s1','s2','s3','hr','bb'];
 let D={players:[],games:[]},tab='g',cur=null,sortK='ops',armed=null,ui={},ed=null,draft=null,gdv='',gov='',showAtt=false,rcur=null,rview='grid',msg='';
 /* ===== 雲端設定 ===== */
-const API_URL=''; // ← 部署 Apps Script 後，把「網頁應用程式」網址貼在引號裡；留空＝只存在這台裝置
+const API_URL='https://script.google.com/macros/s/AKfycbzlv2AXUh3Q8KKG2K99K1HlCTyZI7DizAkrq6zzh0LNqdktVITI3dyW2JqbspentKzB/exec'; // ← 部署 Apps Script 後，把「網頁應用程式」網址貼在引號裡；留空＝只存在這台裝置
 const CLOUD=!!API_URL,LSK=CLOUD?'bbcloud':'bbstats';
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}};
 const CID=ls('bbcid')||(()=>{const c=Date.now().toString(36)+Math.random().toString(36).slice(2,8);ls('bbcid',c);return c})();
