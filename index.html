@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>棒壘球成績統計</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#6b7480;--ac:#5e35b1;--bd:#dde1e6;--ok:#1a7f4b;--bl:#1c64c8;--blbg:#e5effc;--pu:#7b3fc4;--pubg:#f0e8fb;--gnbg:#e6f4ec;--rd:#c62828;--rdbg:#fdeaea;--yl:#a66a00;--ylbg:#fff4d6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171b;--card:#1e2329;--tx:#eceff2;--mu:#98a2ae;--ac:#8c6df0;--bd:#2f3640;--ok:#4cc38a;--bl:#7db3ff;--blbg:#1d2b40;--pu:#b99aff;--pubg:#2a2040;--gnbg:#1b2f25;--rd:#ff7b7b;--rdbg:#3a2020;--yl:#f2c14e;--ylbg:#3a3118;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171b;--card:#1e2329;--tx:#eceff2;--mu:#98a2ae;--ac:#8c6df0;--bd:#2f3640;--ok:#4cc38a;--bl:#7db3ff;--blbg:#1d2b40;--pu:#b99aff;--pubg:#2a2040;--gnbg:#1b2f25;--rd:#ff7b7b;--rdbg:#3a2020;--yl:#f2c14e;--ylbg:#3a3118;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+main{max-width:760px;margin:0 auto;padding:14px}
+h1{font-size:20px;margin:4px 0 12px}
+nav{display:flex;gap:6px;margin-bottom:12px}
+nav button{flex:1;padding:10px 2px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-size:14px}
+nav button.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+input,select,textarea{font:inherit;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);min-width:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>input{flex:1 1 110px}
+button{font:inherit;color:var(--tx)}
+button.p{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:9px 14px;font-weight:600}
+button.g{background:none;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:6px 10px;font-size:13px}
+button.g.arm{border-color:var(--rd);color:var(--rd)}
+.pn{display:flex;gap:10px;align-items:center}
+.no{flex:0 0 38px;height:38px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.pick{flex:1;text-align:left;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);font-weight:600}
+.pick.empty{color:var(--mu);border-style:dashed;font-weight:400}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{padding:8px 12px;border:1px solid var(--bd);border-radius:20px;background:var(--bg);font-size:14px}
+.chip.on{border-color:var(--ac);color:var(--ac);font-weight:600}
+.chip.h{border-color:var(--ok)}
+.chip.used{border-color:var(--pu);color:var(--pu);background:var(--pubg)}
+.chip.back{border-color:var(--ok);color:var(--ok);background:var(--gnbg);font-weight:600}
+.chip.oth,.chip.sel{border-color:var(--bl);color:var(--bl);background:var(--blbg)}
+.chip.sel{font-weight:600}
+.chip.rg{border-color:var(--ok);color:var(--ok);background:var(--gnbg)}
+.chip.rr{border-color:var(--rd);color:var(--rd);background:var(--rdbg)}
+.chip.ry{border-color:var(--yl);color:var(--yl);background:var(--ylbg)}
+.pa .rs.rg{color:var(--ok)}.pa .rs.rr{color:var(--rd)}.pa .rs.ry{color:var(--yl)}
+.hr{background:var(--ok);color:var(--card);padding:1px 6px;border-radius:5px;font-weight:700}
+.chip.hrc,.pa .rs.hrc{background:var(--ok);color:var(--card);border-color:var(--ok);font-weight:700}
+.chip:disabled{opacity:.85}
+.g.sub{border-color:var(--bl);color:var(--bl)}
+.g.back{border-color:var(--ok);color:var(--ok)}
+.pa{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)}
+.pa .n{flex:0 0 62px;color:var(--mu);font-size:13px}
+.pa .rs{flex:1;text-align:left;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);font-weight:600}
+.pa .rs.ok{color:var(--ok)}
+.pa .rs.on{border-color:var(--ac)}
+.st{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--mu)}
+.st button{width:28px;height:28px;border:0;border-radius:6px;background:var(--bg);font-size:16px}
+.st b{min-width:14px;text-align:center;color:var(--tx);font-size:15px}
+.ft{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)}
+.add{margin-top:8px;width:100%;padding:8px;border:1px dashed var(--ac);color:var(--ac);background:none;border-radius:8px;font-weight:600}
+.sum{margin-left:auto;font-size:13px;color:var(--mu)}
+.sum span{color:var(--ok);font-weight:600}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;white-space:nowrap}
+th,td{padding:8px 7px;text-align:right;border-bottom:1px solid var(--bd)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
+table.gc td:not(:first-child),table.gc th:not(:first-child){text-align:center}
+th{color:var(--mu);font-weight:500;cursor:pointer}
+th.s{color:var(--ac)}
+.mu{color:var(--mu);font-size:13px}
+ul{list-style:none;margin:0;padding:0}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:max-content;max-width:min(92vw,560px);background:var(--tx);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#toast.show{opacity:1}
+li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+</style>
+</head>
+<body>
+<main>
+<h1>⚾ 球隊成績統計</h1>
+<nav id="nav"></nav>
+<div id="v"></div>
+<p class="mu" id="ns"></p>
+<div id="toast" role="status"></div>
+</main>
+<script>
+const N=11;
+const RS={s1:'一安',s2:'二安',s3:'三安',hr:'全壘打',bb:'四球',so:'三振',go:'滾地出局',inf:'內飛出局',of:'外飛出局',sf:'犧牲飛球',gdp:'雙殺',e:'失誤上壘',fc:'野手選擇'};
+const POS={P:['投','投手'],C:['捕','捕手'],'1B':['一','一壘手'],'2B':['二','二壘手'],'3B':['三','三壘手'],SS:['游','游擊手'],LF:['左','左外野'],CF:['中','中外野'],RF:['右','右外野'],DH:['DH','指定打擊'],EP:['EP','延伸球員']};
+const OUT=['so','go','inf','of','sf'];
+const outW=r=>r=='gdp'?2:OUT.includes(r)?1:0;
+const outs=(g,n)=>g.pa.flat().filter(a=>a.inn==n).reduce((t,a)=>t+outW(a.res),0)+(g.xo[n]||0);
+function seqOf(g){const L=[];g.pa.forEach((l,i)=>{if(i<g.n)l.forEach((a,k)=>L.push({i,k,a}))});L.sort((x,y)=>x.k-y.k||x.i-y.i);
+let inn=1,o=0;L.forEach(e=>{e.inn=inn;o+=outW(e.a.res)+(e.a.x||0);if(o>=3){inn++;o=0}});return{L,inn,o}}
+const CAT=r=>['s1','s2','s3','hr','bb'].includes(r)?'rg':outW(r)?'rr':'ry';
+const CC={rg:'var(--ok)',rr:'var(--rd)',ry:'var(--yl)'};
+const GOOD=['s1','s2','s3','hr','bb'];
+let D={players:[],games:[]},tab='g',cur=null,sortK='ops',armed=null,ui={},ed=null,draft=null,gdv='',gov='',showAtt=false,rcur=null,rview='grid',msg='';
+/* ===== 雲端設定 ===== */
+const API_URL='https://script.google.com/macros/s/AKfycbzlv2AXUh3Q8KKG2K99K1HlCTyZI7DizAkrq6zzh0LNqdktVITI3dyW2JqbspentKzB/exec'; // ← 部署 Apps Script 後，把「網頁應用程式」網址貼在引號裡
+const CLOUD=!!API_URL,LSK=CLOUD?'bbcloud':'bbstats';
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}};
+const CID=ls('bbcid')||(()=>{const c=Date.now().toString(36)+Math.random().toString(36).slice(2,8);ls('bbcid',c);return c})();
+let KEY=ls('bbkey')||'',ME=ls('bbname')||'',VER={},LK={},PV='',DIRTY={},REL={},net='',lastSync=0,lastHb=0,needR=false,busy=false;
+try{const t=ls(LSK);if(t){const o=JSON.parse(t);if(o.D){D=o.D;VER=o.VER||{};PV=o.PV||'';DIRTY=o.DIRTY||{}}else D=o}}catch(e){}
+function saveLocal(){ls(LSK,JSON.stringify(CLOUD?{D,VER,PV,DIRTY}:D))}
+function save(){if(CLOUD&&cur){DIRTY[cur]=1;setTimeout(push,300)}saveLocal();status()}
+const mine=id=>!CLOUD||!!(LK[id]&&LK[id].by==CID);
+const typing=()=>{const a=document.activeElement;return a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)};
+function maybeRender(){if(typing())return;needR=false;render()}
+let tT;function toast(t){const e=$('#toast');e.textContent=t;e.className='show';clearTimeout(tT);tT=setTimeout(()=>e.className='',5000)}
+function status(){const e=$('#ns');if(!e)return;const n=Object.keys(DIRTY).length;
+e.textContent=!CLOUD?'資料儲存在這台裝置的瀏覽器中（尚未設定雲端）。':net=='auth'?'⚠️ 通關密語不正確':net=='off'?'⚠️ 連不上雲端'+(n?`，${n} 場比賽的修改先存在這台手機，恢復連線後會自動上傳`:''):n?'⏳ 上傳中…':'☁️ 已和雲端同步'+(ME?`（${ME}）`:'')}
+async function api(action,body){const r=await fetch(API_URL,{method:'POST',body:JSON.stringify(Object.assign({action,key:KEY,cid:CID,name:ME},body||{}))});const j=await r.json();if(j.err=='auth'){net='auth';status()}return j}
+function putGame(data,ver){const k=D.games.findIndex(x=>x.id==data.id);if(k>=0)D.games[k]=data;else D.games.push(data);VER[data.id]=ver;D.games.sort((a,b)=>a.date<b.date?-1:1)}
+// 上傳有修改的比賽（只有記錄員會有修改）
+async function push(){if(busy||!KEY||net=='auth')return;busy=true;try{
+for(const id of Object.keys(DIRTY)){const g=D.games.find(x=>x.id==id);if(!g){delete DIRTY[id];continue}
+const snap=JSON.stringify(g);let r;
+try{r=await api('save',{game:g,base:VER[id]||0})}catch(e){net='off';break}
+if(net=='off')net='';
+if(r.ok){VER[id]=r.version;if(JSON.stringify(g)==snap)delete DIRTY[id];
+if(REL[id]&&!DIRTY[id]){delete REL[id];try{await api('unlock',{id})}catch(e){}LK[id]={};needR=true}}
+else if(r.err=='lost'||r.err=='conflict'){ls('bbbak_'+id+'_'+Date.now(),snap);delete DIRTY[id];delete REL[id];if(r.data)putGame(r.data,r.version);
+if(r.err=='lost')LK[id]={by:'?',name:r.lockName,fresh:true};
+toast(r.err=='lost'?`記錄權已由「${r.lockName}」接手，你最後的修改沒有上傳（已備份在這台手機）。`:'雲端上的這場比賽比你的新，已改用雲端版本（你的版本已備份在這台手機）。');needR=true}
+else if(r.err=='notfound'){delete DIRTY[id];D.games=D.games.filter(x=>x.id!=id);needR=true}
+else{if(r.err!='auth')net='off';break}}
+}finally{busy=false;saveLocal();status();if(needR)maybeRender();if(Object.keys(DIRTY).length&&net!='auth')setTimeout(push,net=='off'?5000:300)}}
+// 下載其他人的修改
+async function sync(){if(!CLOUD||!KEY||net=='auth')return;lastSync=Date.now();let r;
+try{r=await api('sync',{have:VER,pv:PV})}catch(e){net='off';status();return}
+if(!r.ok){status();return}
+if(net=='off'){net='';push()}
+const before=JSON.stringify([VER,LK,PV]),ids=new Set();
+r.games.forEach(m=>{ids.add(m.id);LK[m.id]={by:m.lockBy,name:m.lockName,fresh:m.lockFresh,age:m.lockAge};
+if(m.data&&!DIRTY[m.id]&&m.version>(VER[m.id]||0))putGame(m.data,m.version)});
+D.games=D.games.filter(g=>ids.has(g.id)||DIRTY[g.id]);
+if(r.players){D.players=r.players;PV=r.pv}
+if(JSON.stringify([VER,LK,PV])!=before)needR=true;
+saveLocal();status();if(needR)maybeRender()}
+// 記錄權
+async function take(force){if(force&&armed!='tk'+cur){armed='tk'+cur;return render()}armed=null;const id=cur;let r;
+try{r=await api('lock',{id,force:!!force})}catch(e){return toast('連不上雲端，請確認網路後再試')}
+if(!r.ok){if(r.err=='locked'){LK[id]={by:'?',name:r.lockName,fresh:true};toast(`「${r.lockName}」剛剛搶先開始記錄了`)}else toast('無法取得記錄權（'+r.err+'）');return render()}
+putGame(r.data,r.version);LK[id]={by:CID,name:ME,fresh:true};lastHb=Date.now();saveLocal();render()}
+async function handOver(){await push();if(DIRTY[cur])return toast('還有修改沒上傳完，請等網路恢復再交出');
+try{await api('unlock',{id:cur})}catch(e){return toast('連不上雲端，請確認網路後再試')}LK[cur]={};render()}
+function vLogin(){$('#nav').innerHTML='';$('#v').innerHTML=`<div class="card"><b>加入球隊記錄</b><p class="mu" style="margin:6px 0 10px">${net=='auth'?'通關密語不正確，請重新輸入。':'第一次使用，請輸入球隊的通關密語和你的名字。記錄比賽時，其他人會看到是誰在記錄。'}</p><div class="row"><input id="lk" placeholder="通關密語" value="${esc(KEY)}"><input id="lm" placeholder="你的名字" value="${esc(ME)}"><button class="p" onclick="login()">開始使用</button></div></div>`}
+async function login(){const k=$('#lk').value.trim(),m=$('#lm').value.trim();if(!k||!m)return toast('通關密語和名字都要填');
+KEY=k;ME=m;ls('bbkey',k);ls('bbname',m);net='';PV='';$('#v').innerHTML='<div class="card mu">連線中…</div>';await sync();render();if(net=='off')toast('連不上雲端，請確認網路')}
+const cfg=()=>CLOUD?`<div class="card"><b>我的設定</b><div class="row" style="margin-top:8px"><input id="cm" value="${esc(ME)}" placeholder="你的名字"><button class="p" onclick="setMe()">更新名字</button><button class="g" onclick="KEY='';ls('bbkey','');render()">登出這台裝置</button></div></div>`:'';
+function setMe(){const m=$('#cm').value.trim();if(m){ME=m;ls('bbname',m);status();toast('名字已更新')}}
+async function pApi(a,b){try{const r=await api(a,b);if(r.ok){D.players=r.players;PV=r.pv;saveLocal();render()}else toast('沒有成功（'+r.err+'）')}catch(e){toast('修改球員名單需要網路')}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+// 球員名單改存在雲端（GitHub 上的頁面是公開的，不放姓名）
+const nm=p=>(p.num?'#'+esc(p.num)+' ':'')+esc(p.name);
+const f3=x=>x.toFixed(3).replace(/^0/,'');
+function calc(t){const g=k=>t[k]||0;const h=g('s1')+g('s2')+g('s3')+g('hr');
+const ab=h+g('so')+g('go')+g('inf')+g('of')+g('gdp')+g('e')+g('fc');
+const pa=ab+g('bb')+g('hbp')+g('sf');
+const tb=g('s1')+2*g('s2')+3*g('s3')+4*g('hr');
+const d=ab+g('bb')+g('hbp')+g('sf');
+const avg=ab?h/ab:0,obp=d?(h+g('bb')+g('hbp'))/d:0,slg=ab?tb/ab:0;
+return{h,ab,pa,avg,obp,slg,ops:obp+slg,hr:g('hr'),rbi:g('rbi'),r:g('r'),bb:g('bb')+g('hbp'),so:g('so')}}
+function ens(g){g.lu=g.lu||Array(N).fill(null);g.pa=g.pa||Array.from({length:N},()=>[]);g.ex=g.ex||{};g.pos=g.pos||Array(N).fill(null);g.n=g.n||11;
+g.pa=g.pa.map(l=>l.filter(x=>x.res!='sh').map(x=>{if(x.res=='hbp')x.res='bb';if(x.res=='fo')x.res='of';return x}));
+g.hist=g.hist||g.lu.map(x=>x?[x]:[]);
+g.pa.forEach((a,i)=>a.forEach(x=>{if(!x.pid)x.pid=g.lu[i];if(x.pid&&!g.hist[i].includes(x.pid))g.hist[i].push(x.pid)}));
+g.seq=g.seq||g.hist.map(x=>[...x]);g.att=g.att||D.players.map(p=>p.id);g.inn=g.inn||1;g.xo=g.xo||{};g.sq=g.sq||0;
+if(g.r){g.lu.forEach((p,i)=>{if(p&&(g.r[i]||(g.sb||[])[i]))g.ex[p]={r:g.r[i]||0,sb:(g.sb||[])[i]||0}});delete g.r;delete g.sb}}
+const gx=(g,p)=>g.ex[p]||(g.ex[p]={r:0,sb:0});
+const G=()=>D.games.find(x=>x.id==cur);
+function nav(){const t=[['g','比賽記錄'],['r','比賽成績'],['s','累計成績'],['p','球員名單']];
+$('#nav').innerHTML=t.map(([k,n])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';ui={};render()">${n}</button>`).join('')}
+function render(){if(CLOUD&&(!KEY||!ME||net=='auth')){vLogin();status();return}
+nav();({g:vGame,r:vResults,s:vStats,p:vPlayers})[tab]();if(tab=='p')$('#v').insertAdjacentHTML('beforeend',cfg()+bk());status()}
+const bk=()=>`<div class="card"><b>${CLOUD?'匯入舊資料／匯出備份':'資料備份／轉移到其他裝置'}</b><p class="mu" style="margin:6px 0">${CLOUD?'舊版頁面的資料：在舊版按「匯出」、複製整段文字，貼到下方「匯入」，就會併入雲端（雲端已有的比賽會略過，不會覆蓋）。雲端資料平常不用備份，這裡的「匯出」是額外留一份文字檔。':'資料只存在這台裝置的瀏覽器。換裝置時：先在這裡「匯出」並複製整段文字（可貼到 LINE、備忘錄或雲端筆記），到另一台裝置開啟本頁，貼到下方「匯入」。'}</p><div class="row"><button class="p" onclick="bkOut()">匯出資料</button><button class="g" onclick="bkCopy()">複製</button></div><textarea id="bo" readonly rows="4" style="width:100%;margin-top:8px;font-size:12px"></textarea><div class="mu" style="margin:12px 0 6px">${CLOUD?'匯入（併入雲端）':'匯入（會取代這台裝置的所有資料）'}</div><textarea id="bi" rows="4" placeholder="貼上匯出的文字" style="width:100%;font-size:12px"></textarea><div class="row" style="margin-top:8px"><button class="p" onclick="bkIn()">匯入</button><span id="bm" class="mu" style="flex:1"></span></div></div>`;
+function bkOut(){const t=$('#bo');t.value=JSON.stringify(D);t.focus();t.select();$('#bm').textContent='已產生，請按「複製」'}
+function bkCopy(){const t=$('#bo');if(!t.value)bkOut();t.focus();t.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}$('#bm').textContent=ok?'已複製':'請長按文字選「全選」再複製'}
+function bkIn(){const v=$('#bi').value.trim();let d;try{d=JSON.parse(v);if(!Array.isArray(d.players)||!Array.isArray(d.games))throw 0}catch(e){return $('#bm').textContent='格式不正確，請確認完整貼上匯出的文字'}
+if(armed!='imp'){armed='imp';return $('#bm').textContent=CLOUD?`共 ${d.players.length} 位球員、${d.games.length} 場比賽，再按一次「匯入」上傳到雲端`:'會取代這台裝置的所有資料，再按一次「匯入」確認'}
+armed=null;
+if(CLOUD){$('#bm').textContent='上傳中…';api('importAll',{players:d.players,games:d.games}).then(async r=>{if(!r.ok)return $('#bm').textContent='沒有成功（'+r.err+'）';PV='';await sync();render();toast(`✔ 已併入雲端：新增 ${r.np} 位球員、${r.ng} 場比賽`+(r.sk?`；${r.sk} 場雲端已有，略過`:''))}).catch(()=>$('#bm').textContent='上傳需要網路');return}
+D=d;D.seeded=1;cur=null;draft=null;save();render();$('#bm').textContent='✔ 匯入完成'}
+function vPlayers(){
+$('#v').innerHTML=`<div class="card"><div class="row"><input id="pn" placeholder="球員姓名"><input id="pu" placeholder="背號" style="max-width:90px"><button class="p" onclick="addP()">新增</button></div></div>
+<div class="card">${D.players.length?'<ul>'+D.players.map(p=>ed==p.id?`<li class="row"><input id="en" value="${esc(p.name)}"><input id="eu" value="${esc(p.num)}" style="max-width:90px"><button class="p" onclick="saveE('${p.id}')">儲存</button></li>`:`<li><span>${nm(p)}</span><span><button class="g" onclick="ed='${p.id}';render()">編輯</button> <button class="g ${armed==p.id?'arm':''}" onclick="delP('${p.id}')">${armed==p.id?'再按一次刪除':'刪除'}</button></span></li>`).join('')+'</ul>':'<span class="mu">還沒有球員，先新增隊員吧！</span>'}</div>`}
+function addP(){const n=$('#pn').value.trim();if(!n)return;if(CLOUD)return pApi('addPlayer',{p:{id:uid(),name:n,num:$('#pu').value.trim()}});D.players.push({id:uid(),name:n,num:$('#pu').value.trim()});save();render()}
+function saveE(id){const p=D.players.find(x=>x.id==id);const n=$('#en').value.trim();if(CLOUD){const u=$('#eu').value.trim();ed=null;return pApi('editPlayer',{p:{id,name:n||p.name,num:u}})}if(n)p.name=n;p.num=$('#eu').value.trim();ed=null;save();render()}
+function delP(id){if(armed!=id){armed=id;return render()}armed=null;if(CLOUD)return pApi('delPlayer',{id});D.players=D.players.filter(p=>p.id!=id);D.games.forEach(g=>{if(g.lu)g.lu=g.lu.map(x=>x==id?null:x)});save();render()}
+function vGame(){
+if(!cur||!G())cur=D.games.length?D.games[D.games.length-1].id:null;
+const today=new Date().toISOString().slice(0,10);
+draft=draft||D.players.map(p=>p.id);
+let h=`<div class="card"><div class="row"><input id="gd" type="date" value="${gdv||today}" style="flex:0 0 150px"><input id="go" placeholder="對手" value="${esc(gov)}"><button class="p" onclick="addG()">新增比賽</button></div><div class="mu" style="margin:10px 0 6px">今日到場選手（${D.players.filter(p=>draft.includes(p.id)).length}/${D.players.length}）　<button class="g" onclick="dA(1)">全選</button> <button class="g" onclick="dA(0)">全不選</button></div><div class="chips">${D.players.map(p=>`<button class="chip ${draft.includes(p.id)?'sel':''}" onclick="dT('${p.id}')">${nm(p)}</button>`).join('')||'<span class="mu">請先到「球員名單」新增球員</span>'}</div></div>`;
+if(D.games.length)h+=`<div class="card row"><select onchange="cur=this.value;ui={};render()" style="flex:1">${D.games.map(g=>`<option value="${g.id}" ${g.id==cur?'selected':''}>${g.done?'✔ ':''}${esc(g.date)} vs ${esc(g.opp||'對手')}</option>`).join('')}</select>${mine(cur)&&G()&&!G().done?'<button class="p" onclick="doneG()">完成登記</button>':''}<button class="g ${armed==cur?'arm':''}" onclick="delG()">${armed==cur?'再按一次刪除':'刪除此場'}</button></div>`;
+const g=G();
+if(!g)h+='<div class="card mu">新增第一場比賽，開始記錄成績。</div>';
+else{ens(g);
+if(g.done){h+=`<div class="card row"><span style="flex:1;color:var(--ok);font-weight:600">✔ 此場比賽已完成登記</span><button class="g" onclick="undoG()">取消完成、重新編輯</button></div>`+gridView(g);$('#v').innerHTML=h;return}
+if(!mine(cur)){const l=LK[cur]||{},SQ=seqOf(g),o=SQ.o;
+h+=`<div class="card" style="border-color:var(--bl)">`+(l.by&&l.fresh?`<b>👀 ${esc(l.name||'有人')} 正在記錄這場比賽</b><p class="mu" style="margin:4px 0 8px">畫面會每幾秒自動更新。為了避免重複輸入，同一時間只有記錄員能修改。</p><button class="g ${armed=='tk'+cur?'arm':''}" onclick="take(1)">${armed=='tk'+cur?'再按一次確認接手（'+esc(l.name)+' 會變成只能看）':'接手記錄（記錄員手機沒電、離開時用）'}</button>`
+:`<b>${l.by?esc(l.name)+' 已經 '+l.age+' 分鐘沒有動作':'目前沒有人在記錄這場比賽'}</b><p class="mu" style="margin:4px 0 8px">按「我來記錄」成為記錄員，其他人會自動變成只能看。</p><button class="p" onclick="take(0)">我來記錄</button>`)+`</div>`;
+h+=`<div class="card"><b>第 ${SQ.inn} 局</b>　${[0,1,2].map(k=>k<o?'●':'○').join(' ')} <span class="mu">${o} 出局</span></div>`+gridView(g);$('#v').innerHTML=h;return}
+if(CLOUD)h+=`<div class="card row" style="border-color:var(--ok)"><span style="flex:1;color:var(--ok);font-weight:600">✏️ 你是這場的記錄員</span><button class="g" onclick="handOver()">交出記錄權</button></div>`;
+h+=`<div class="card row"><span class="mu" style="flex:1">打擊棒次數</span><button class="chip ${g.n==10?'on':''}" onclick="setN(10)">10 棒</button><button class="chip ${g.n==11?'on':''}" onclick="setN(11)">11 棒</button>${armed=='n'+cur?`<span style="flex:1 0 100%;color:var(--ac);font-size:13px">第 11 棒已有資料，再按一次「10 棒」會清除該棒</span>`:''}</div>`;
+h+=`<div class="card"><div class="row"><span class="mu" style="flex:1">到場選手 ${g.att.length} 人</span><button class="g" onclick="showAtt=!showAtt;render()">${showAtt?'收合':'編輯'}</button></div>${showAtt?`<div class="chips">${D.players.map(p=>{const u=g.hist.some(l=>l.includes(p.id));return `<button class="chip ${u?'used':g.att.includes(p.id)?'sel':''}" ${u?'disabled':`onclick="tA('${p.id}')"`}>${nm(p)}${u?'（已上場）':''}</button>`}).join('')}</div>`:''}</div>`;
+if(!D.players.length)h+='<div class="card mu">請先到「球員名單」新增球員。</div>';
+const tH=g.pa.flat().filter(a=>['s1','s2','s3','hr'].includes(a.res)).length,tR=g.pa.flat().reduce((a,x)=>a+x.rbi,0);
+const SQ=seqOf(g),IM=new Map(SQ.L.map(e=>[e.a,e.inn])),m0=msg;msg='';
+const act=g.lu.map((p,i)=>p?i:-1).filter(i=>i>=0&&i<g.n),mn=Math.min(...act.map(i=>g.pa[i].length)),nx=act.length?act.find(i=>g.pa[i].length==mn):-1,np=nx>=0?D.players.find(y=>y.id==g.lu[nx]):null;
+h+=`<div class="card" style="position:sticky;top:env(safe-area-inset-top,0px);z-index:5;border-color:var(--ac);padding:8px 10px"><div class="row" style="gap:10px"><b style="font-size:17px">第 ${SQ.inn} 局</b><span style="letter-spacing:2px;white-space:nowrap">${[0,1,2].map(k=>k<SQ.o?'●':'○').join(' ')} <small style="letter-spacing:0">${SQ.o} 出局</small></span><span style="flex:1;text-align:right;font-size:13px">${np?'下一棒：'+(nx+1)+'棒 '+esc(np.name):''}</span></div>${m0?`<div style="color:var(--ac);font-size:13px;margin-top:6px">${m0}</div>`:''}</div>`;
+h+=`<div class="mu" style="margin:0 2px 8px">全隊：${tH} 安打　${tR} 打點</div>`;
+for(let i=0;i<g.n;i++){
+const pid=g.lu[i],p=D.players.find(x=>x.id==pid),a=g.pa[i],hs=g.hist[i].filter(x=>D.players.some(y=>y.id==x)),multi=hs.length>1;
+h+=`<div class="card" ${i==nx?'style="border:2px solid var(--ac)"':''}><div class="pn"><span class="no">${i+1}</span><button class="pick ${p?'':'empty'}" onclick="op(${i},'p',0)">${p?nm(p):'＋ 選擇第 '+(i+1)+' 棒選手'}</button>${p?`<button class="g" onclick="op(${i},'d',0)">${g.pos[i]?'<b>'+esc(POS[g.pos[i]][0])+'</b>':'守位'}</button><button class="g" onclick="op(${i},'p',0)">更正</button><button class="g sub" onclick="op(${i},'s',0)">換人</button>`:''}</div>`;
+if(multi){const sq=g.seq[i].filter(x=>D.players.some(y=>y.id==x)),pv=sq.length>1?sq[sq.length-2]:null,nn=x=>esc(D.players.find(y=>y.id==x).name);
+h+=`<div class="mu row" style="margin-top:6px"><span>${sq.map((x,k)=>k==sq.length-1?'<b style="color:var(--tx)">'+nn(x)+'</b>':nn(x)).join(' → ')}</span>${pv&&!g.lu.includes(pv)?`<button class="g back" onclick="subP(${i},'${pv}')">↩ 換回 ${nn(pv)}</button>`:''}</div>`}
+if(ui.s==i&&(ui.m=='p'||ui.m=='s')){
+const sub=ui.m=='s',av=D.players.filter(x=>g.att.includes(x.id)||g.lu.includes(x.id));
+h+=`<div class="mu" style="margin-top:8px">${sub?'換人：選擇替補上場的選手':pid?'更正：選擇正確的選手':'選擇第 '+(i+1)+' 棒選手'}<br>藍色＝已在其他棒次${sub||!pid?'（不能選）':'（點選會互換）'}　綠色＝本棒次先前上過場（可換回）</div><div class="chips">`+(av.map(x=>{const j=g.lu.indexOf(x.id),oth=j>=0&&j!=i,cls=x.id==pid?'on':oth?'oth':g.hist[i].includes(x.id)?'back':'';
+const clk=x.id==pid?'':oth?(!sub&&pid?`swapP(${i},${j})`:''):`${sub?'subP':'setP'}(${i},'${x.id}')`;
+return `<button class="chip ${cls}" ${clk?`onclick="${clk}"`:'disabled'}>${nm(x)}${oth?'（'+(j+1)+'棒）':''}${x.id==pid?'（目前）':''}</button>`}).join('')||'<span class="mu">沒有可選的球員（請先勾選到場選手）</span>')+(!sub&&pid&&!a.some(x=>x.pid==pid)?`<button class="chip" onclick="setP(${i},null)">清除</button>`:'')+`</div>`}
+if(p&&ui.s==i&&ui.m=='d')h+=`<div class="mu" style="margin-top:8px">選擇守備位置：</div><div class="chips">`+Object.entries(POS).map(([k,v])=>{const j=g.pos.indexOf(k);return `<button class="chip ${g.pos[i]==k?'on':''}" onclick="setPos(${i},'${k}')">${v[1]}${j>=0&&j!=i?'（'+(j+1)+'棒）':''}</button>`}).join('')+(g.pos[i]?`<button class="chip" onclick="setPos(${i},null)">清除</button>`:'')+`</div>`;
+if(p){
+a.forEach((x,k)=>{const n=a.slice(0,k).filter(y=>y.pid==x.pid).length+1,pl=D.players.find(y=>y.id==x.pid);
+h+=`<div class="pa"><span class="n">${multi&&pl?esc(pl.name)+'<br>':''}第${n}打席<br><small style="color:var(--mu)">${IM.get(x)}局</small></span><button class="rs ${CAT(x.res)}${x.res=='hr'?' hrc':''} ${ui.s==i&&ui.m=='a'&&ui.k==k?'on':''}" onclick="op(${i},'a',${k})">${RS[x.res]}</button><div class="st">打點<button onclick="rb(${i},${k},-1)">−</button><b>${x.rbi}</b><button onclick="rb(${i},${k},1)">+</button></div><div class="st">跑壘出局<button onclick="xa(${i},${k},-1)">−</button><b>${x.x||0}</b><button onclick="xa(${i},${k},1)">+</button></div><button class="g" onclick="dp(${i},${k})">✕</button></div>`;
+if(ui.s==i&&ui.m=='a'&&ui.k==k)h+=resGrid(i)});
+if(ui.s==i&&ui.m=='a'&&ui.k==-1)h+=resGrid(i);
+else h+=`<button class="add" onclick="op(${i},'a',-1)">＋ 新增打席（第${a.filter(y=>y.pid==pid).length+1}打席）</button>`;
+h+=hs.map(x=>{const e=g.ex[x]||{r:0,sb:0},c=calc(a.filter(y=>y.pid==x).reduce((t,y)=>(t[y.res]=(t[y.res]||0)+1,t.rbi=(t.rbi||0)+y.rbi,t),{})),pl=D.players.find(y=>y.id==x);
+return `<div class="ft">${multi?`<b>${esc(pl.name)}</b>`:''}${multi?`<button class="g ${armed=='r'+i+x?'arm':''}" onclick="rmP(${i},'${x}')">${armed=='r'+i+x?'再按一次，連打席一併刪除':'移除'}</button>`:''}<div class="st">打點 <b>${c.rbi}</b></div><div class="sum">${c.ab}打數 <span>${c.h}安打</span></div></div>`}).join('')}
+h+='</div>'}
+h+=`<button class="p" style="width:100%;padding:14px;margin:4px 0 10px" onclick="doneG()">✔ 完成登記</button>`}
+$('#v').innerHTML=h}
+function resGrid(i){return `<div class="chips">`+Object.entries(RS).map(([k,n])=>`<button class="chip ${CAT(k)}${k=='hr'?' hrc':''}" onclick="setA(${i},'${k}')">${n}</button>`).join('')+`</div>`}
+function op(s,m,k){ui=(ui.s==s&&ui.m==m&&ui.k==k)?{}:{s,m,k};render()}
+function doneG(){const g=G();if(CLOUD)REL[cur]=1;g.done=true;g.doneAt=Date.now();ui={};armed=null;save();render();scrollTo(0,0)}
+async function undoG(){if(CLOUD&&!mine(cur)){await take(0);if(!mine(cur))return}G().done=false;save();render()}
+function gridView(g){ens(g);const {L}=seqOf(g);
+if(!L.length)return '<div class="card mu">這場比賽沒有打席紀錄。</div>';
+const NI=Math.max(...L.map(e=>e.inn)),SH={s1:'一安',s2:'二安',s3:'三安',hr:'全壘打',bb:'四球',so:'三振',go:'滾地',inf:'內飛',of:'外飛',sf:'犧飛',gdp:'雙殺',e:'失誤',fc:'野選'};
+const M={},ih=Array(NI+1).fill(0),ir=Array(NI+1).fill(0),rows=[];let TA=0,TH=0,TR=0,TB=0,TS=0;
+L.forEach(e=>{const k=e.i+'|'+e.a.pid+'|'+e.inn;(M[k]=M[k]||[]).push(e.a)});
+for(let i=0;i<g.n;i++){const ids=[...new Set([...g.seq[i],...g.hist[i]])].filter(x=>D.players.some(y=>y.id==x));
+ids.forEach((x,k)=>{const pl=D.players.find(y=>y.id==x),pos=(g.pp&&g.pp[x])||(x==g.lu[i]?g.pos[i]:'')||'';
+const c=calc(g.pa[i].filter(a=>a.pid==x).reduce((t,a)=>(t[a.res]=(t[a.res]||0)+1,t.rbi=(t.rbi||0)+a.rbi,t),{}));TA+=c.ab;TH+=c.h;TR+=c.rbi;TB+=c.bb;TS+=c.so;
+let cells='';for(let q=1;q<=NI;q++){const l=M[i+'|'+x+'|'+q]||[];
+l.forEach(a=>{if(['s1','s2','s3','hr'].includes(a.res))ih[q]++;ir[q]+=a.rbi});
+cells+=`<td>${l.map(a=>`<span ${a.res=='hr'?'class="hr"':`style="color:${CC[CAT(a.res)]};font-weight:600"`}>${SH[a.res]}</span>${a.rbi?`<sup style="color:var(--ok);font-weight:700">${a.rbi}</sup>`:''}`).join('<br>')}</td>`}
+rows.push(`<tr><td${k?' style="padding-left:20px"':''}>${k?'':(i+1)+' '}${esc(pl.name)}</td><td>${pos}</td>${cells}<td>${c.ab}</td><td>${c.h}</td><td>${c.rbi}</td><td>${c.bb}</td><td>${c.so}</td></tr>`)})}
+const hd=Array.from({length:NI},(_,q)=>`<th>${q+1}</th>`).join('');
+const fr=(n,a)=>`<tr><td><b>${n}</b></td><td></td>${a.slice(1).map(v=>`<td>${v||''}</td>`).join('')}`;
+const tot=`<td>${TA}</td><td>${TH}</td><td>${TR}</td><td>${TB}</td><td>${TS}</td></tr>`,blank='<td></td><td></td><td></td><td></td><td></td></tr>';
+return `<div class="card wrap"><table class="gc"><tr><th>棒次／選手</th><th>守備</th>${hd}<th>打數</th><th>安打</th><th>打點</th><th>四死球</th><th>三振</th></tr>${rows.join('')}${fr('每局安打',ih)+tot}${fr('每局打點',ir)+blank}</table></div><p class="mu">右上角綠色小字數字＝該打席的打點。綠色＝安打／四球，紅色＝出局，黃色＝失誤／野選。</p>`}
+function innView(g){const {L}=seqOf(g);if(!L.length)return '<div class="card mu">這場比賽沒有打席紀錄。</div>';
+const m={};L.forEach(e=>(m[e.inn]=m[e.inn]||[]).push(e));
+return Object.keys(m).map(Number).sort((a,b)=>a-b).map(q=>{let h=0,r=0,o=0;
+const rows=m[q].map(({i,a})=>{const p=D.players.find(y=>y.id==a.pid);if(['s1','s2','s3','hr'].includes(a.res))h++;r+=a.rbi;o+=outW(a.res)+(a.x||0);
+return `<tr><td>${i+1}棒</td><td style="text-align:left">${p?nm(p):'—'}</td><td style="text-align:left;color:${CC[CAT(a.res)]};font-weight:600">${a.res=='hr'?`<span class="hr">${RS[a.res]}</span>`:RS[a.res]}${a.x?'<span class="mu">（跑壘出局 '+a.x+'）</span>':''}</td><td>${a.rbi?a.rbi+' 打點':''}</td></tr>`}).join('');
+return `<div class="card"><div class="pn" style="justify-content:space-between;margin-bottom:6px"><b>第 ${q} 局</b><span class="mu">${m[q].length} 打席　${h} 安打　${r} 打點　${Math.min(3,o)} 出局</span></div><div class="wrap"><table>${rows}</table></div></div>`}).join('')}
+function vResults(){const L=D.games.filter(g=>g.done).sort((a,b)=>a.date<b.date?1:-1);
+if(!L.length){$('#v').innerHTML='<div class="card mu">還沒有完成登記的比賽。到「比賽記錄」輸入完成後，按「完成登記」就會出現在這裡。</div>';return}
+if(!L.find(g=>g.id==rcur))rcur=L[0].id;const g=L.find(x=>x.id==rcur);
+$('#v').innerHTML=`<div class="card"><select style="width:100%" onchange="rcur=this.value;render()">${L.map(x=>`<option value="${x.id}" ${x.id==rcur?'selected':''}>${esc(x.date)} vs ${esc(x.opp||'對手')}</option>`).join('')}</select><div class="row" style="margin-top:8px"><button class="chip ${rview=='grid'?'sel':''}" onclick="rview='grid';render()">單場賽果</button><button class="chip ${rview=='inn'?'sel':''}" onclick="rview='inn';render()">逐局打擊結果</button></div></div>`+(rview=='inn'?innView(g):gridView(g))}
+function setN(n){const g=G();if(n==g.n)return;
+if(n==10){if(g.lu[10]||g.pa[10].length||g.hist[10].length){if(armed!='n'+cur){armed='n'+cur;return render()}
+g.hist[10].forEach(x=>delete g.ex[x]);g.lu[10]=null;g.pa[10]=[];g.hist[10]=[];g.seq[10]=[];g.pos[10]=null}}
+g.n=n;armed=null;ui={};save();render()}
+function setPos(i,pos){const g=G();g.pp=g.pp||{};let j=-1;if(pos){j=g.pos.indexOf(pos);if(j>=0&&j!=i)g.pos[j]=g.pos[i];else j=-1}g.pos[i]=pos;if(g.lu[i])g.pp[g.lu[i]]=pos;if(j>=0&&g.lu[j])g.pp[g.lu[j]]=g.pos[j];ui={};save();render()}
+const dd=l=>l.filter((x,k)=>x!=l[k-1]);
+function setP(i,id){const g=G(),old=g.lu[i];
+if(old&&id){g.pa[i].forEach(x=>{if(x.pid==old)x.pid=id});const o=g.ex[old];if(o){const e=gx(g,id);e.r+=o.r;delete g.ex[old]}
+g.hist[i]=[...new Set(g.hist[i].map(x=>x==old?id:x))];g.seq[i]=dd(g.seq[i].map(x=>x==old?id:x))}
+else if(id){g.hist[i].push(id);g.seq[i].push(id)}
+else if(old){g.hist[i]=g.hist[i].filter(x=>x!=old);g.seq[i]=dd(g.seq[i].filter(x=>x!=old));delete g.ex[old]}
+g.lu[i]=id||g.seq[i].slice(-1)[0]||null;if(!g.lu[i])g.pos[i]=null;ui={};save();render()}
+function swapP(i,j){const g=G(),a=g.lu[i],b=g.lu[j];
+g.pa[i].forEach(x=>{if(x.pid==a)x.pid=b});g.pa[j].forEach(x=>{if(x.pid==b)x.pid=a});
+g.hist[i]=[...new Set(g.hist[i].map(x=>x==a?b:x))];g.hist[j]=[...new Set(g.hist[j].map(x=>x==b?a:x))];
+g.seq[i]=dd(g.seq[i].map(x=>x==a?b:x));g.seq[j]=dd(g.seq[j].map(x=>x==b?a:x));
+g.lu[i]=b;g.lu[j]=a;ui={};save();render()}
+function rmP(i,x){const g=G(),k='r'+i+x,n=g.pa[i].filter(y=>y.pid==x).length;
+if(n&&armed!=k){armed=k;return render()}armed=null;
+g.pa[i]=g.pa[i].filter(y=>y.pid!=x);g.hist[i]=g.hist[i].filter(y=>y!=x);g.seq[i]=dd(g.seq[i].filter(y=>y!=x));delete g.ex[x];
+if(g.lu[i]==x){g.lu[i]=g.seq[i].slice(-1)[0]||null;if(!g.lu[i])g.pos[i]=null}ui={};save();render()}
+function subP(i,id){const g=G(),old=g.lu[i];g.pp=g.pp||{};if(old&&g.pos[i]&&!g.pp[old])g.pp[old]=g.pos[i];g.lu[i]=id;if(g.pos[i])g.pp[id]=g.pos[i];if(!g.hist[i].includes(id))g.hist[i].push(id);g.seq[i]=dd([...g.seq[i],id]);ui={};save();render()}
+function keep(){gdv=$('#gd').value;gov=$('#go').value}
+function dT(id){keep();draft=draft.includes(id)?draft.filter(x=>x!=id):[...draft,id];render()}
+function dA(f){keep();draft=f?D.players.map(p=>p.id):[];render()}
+function tA(id){const g=G();if(g.hist.some(l=>l.includes(id)))return;g.att=g.att.includes(id)?g.att.filter(x=>x!=id):[...g.att,id];save();render()}
+function setA(i,res){const g=G(),a=g.pa[i],b=seqOf(g).inn;
+if(ui.k<0)a.push({res,rbi:0,pid:g.lu[i],x:0});else a[ui.k].res=res;
+const n2=seqOf(g).inn;if(n2>b)msg='第 '+b+' 局三出局，已換到第 '+n2+' 局';ui={};save();render()}
+function xa(i,k,d){const x=G().pa[i][k];x.x=Math.max(0,Math.min(2,(x.x||0)+d));save();render()}
+function rb(i,k,d){const x=G().pa[i][k];x.rbi=Math.max(0,x.rbi+d);save();render()}
+function dp(i,k){G().pa[i].splice(k,1);ui={};save();render()}
+function cn(pid,key,d){const e=gx(G(),pid);e[key]=Math.max(0,e[key]+d);save();render()}
+async function addG(){const g={id:uid(),date:$('#gd').value,opp:$('#go').value.trim(),att:draft.filter(x=>D.players.some(p=>p.id==x))};ens(g);
+if(CLOUD){keep();let r;try{r=await api('create',{game:g})}catch(e){return toast('新增比賽需要網路，請確認連線後再試')}
+if(!r.ok)return toast('新增失敗（'+r.err+'）');gdv='';gov='';ui={};
+if(r.existing){const m=r.game;putGame(m.data,m.version);LK[m.id]={by:m.lockBy,name:m.lockName,fresh:m.lockFresh,age:m.lockAge};cur=m.id;
+toast(`${m.date} vs ${m.opp||'對手'} 已經有人建立了，已切換到這一場。`+(m.lockFresh&&m.lockBy!=CID?`（${m.lockName} 正在記錄）`:'')+'同一天和同一隊打兩場時，請在對手欄加上「第二場」。')}
+else{putGame(g,1);LK[g.id]={by:CID,name:ME,fresh:true};cur=g.id;lastHb=Date.now()}
+saveLocal();return render()}gdv='';gov='';D.games.push(g);D.games.sort((a,b)=>a.date<b.date?-1:1);cur=g.id;ui={};save();render()}
+function delG(){if(armed!=cur){armed=cur;return render()}armed=null;
+if(CLOUD){const id=cur;api('del',{id}).then(r=>{if(!r.ok)return toast(r.err=='locked'?`${r.lockName} 正在記錄這場，不能刪除`:'刪除失敗（'+r.err+'）');delete DIRTY[id];D.games=D.games.filter(g=>g.id!=id);if(cur==id)cur=null;saveLocal();render()}).catch(()=>toast('刪除比賽需要網路'));return}D.games=D.games.filter(g=>g.id!=cur);cur=null;save();render()}
+function vStats(){
+const T={};D.players.forEach(p=>T[p.id]={t:{},gp:0});
+D.games.filter(g=>g.done).forEach(g=>{ens(g);const seen=new Set();g.hist.forEach(l=>l.forEach(x=>seen.add(x)));
+seen.forEach(x=>{if(T[x])T[x].gp++});
+g.pa.forEach(l=>l.forEach(a=>{const e=T[a.pid];if(!e)return;e.t[a.res]=(e.t[a.res]||0)+1;e.t.rbi=(e.t.rbi||0)+a.rbi}));
+});
+const rows=D.players.map(p=>({p,gp:T[p.id].gp,...calc(T[p.id].t)}));
+rows.sort((a,b)=>(b[sortK]||0)-(a[sortK]||0));
+const cols=[['gp','出賽'],['pa','打席'],['ab','打數'],['h','安打'],['hr','HR'],['rbi','打點'],['bb','四球'],['so','三振'],['avg','打擊率'],['obp','上壘率'],['slg','長打率'],['ops','OPS']];
+const fm=(k,v)=>['avg','obp','slg','ops'].includes(k)?f3(v):v;
+$('#v').innerHTML=D.players.length?`<div class="card wrap"><table><tr><th>球員</th>${cols.map(([k,n])=>`<th class="${sortK==k?'s':''}" onclick="sortK='${k}';render()">${n}</th>`).join('')}</tr>${rows.map(r=>`<tr><td>${esc(r.p.name)}</td>${cols.map(([k])=>`<td>${fm(k,r[k])}</td>`).join('')}</tr>`).join('')}</table></div><p class="mu">點欄位標題可依該項排序。已完成登記 ${D.games.filter(g=>g.done).length} 場，未完成登記的比賽不計入。</p>`:'<div class="card mu">尚無資料。</div>'}
+render();
+if(CLOUD){
+if(KEY){sync();push()}
+setInterval(()=>{if(!KEY||document.hidden)return;const now=Date.now(),g=cur&&G(),ed=g&&!g.done&&mine(cur);
+if(now-lastSync>(ed?15000:4000))sync();
+if(ed&&now-lastHb>60000){lastHb=now;const id=cur;api('lock',{id,hb:1}).then(r=>{if(!r.ok&&r.err=='lost'){LK[id]={by:'?',name:r.lockName,fresh:true};toast(`記錄權已由「${r.lockName}」接手`);needR=true;maybeRender()}}).catch(()=>{})}
+if(needR)maybeRender()},1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&KEY)sync()});
+document.addEventListener('focusout',()=>setTimeout(()=>{if(needR)maybeRender()},50));
+}
+</script>
+</body>
+</html>
