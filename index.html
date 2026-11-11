@@ -94,7 +94,7 @@ const CC={rg:'var(--ok)',rr:'var(--rd)',ry:'var(--yl)'};
 const GOOD=['s1','s2','s3','hr','bb'];
 let D={players:[],games:[]},tab='g',cur=null,sortK='ops',armed=null,ui={},ed=null,draft=null,gdv='',gov='',showAtt=false,rcur=null,rview='grid',msg='';
 /* ===== 雲端設定 ===== */
-const API_URL='https://script.google.com/macros/s/AKfycbzlv2AXUh3Q8KKG2K99K1HlCTyZI7DizAkrq6zzh0LNqdktVITI3dyW2JqbspentKzB/exec'; // ← 部署 Apps Script 後，把「網頁應用程式」網址貼在引號裡
+const API_URL=''; // ← 部署 Apps Script 後，把「網頁應用程式」網址貼在引號裡；留空＝只存在這台裝置
 const CLOUD=!!API_URL,LSK=CLOUD?'bbcloud':'bbstats';
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}};
 const CID=ls('bbcid')||(()=>{const c=Date.now().toString(36)+Math.random().toString(36).slice(2,8);ls('bbcid',c);return c})();
@@ -107,7 +107,7 @@ const typing=()=>{const a=document.activeElement;return a&&/INPUT|TEXTAREA|SELEC
 function maybeRender(){if(typing())return;needR=false;render()}
 let tT;function toast(t){const e=$('#toast');e.textContent=t;e.className='show';clearTimeout(tT);tT=setTimeout(()=>e.className='',5000)}
 function status(){const e=$('#ns');if(!e)return;const n=Object.keys(DIRTY).length;
-e.textContent=!CLOUD?'資料儲存在這台裝置的瀏覽器中（尚未設定雲端）。':net=='auth'?'⚠️ 通關密語不正確':net=='off'?'⚠️ 連不上雲端'+(n?`，${n} 場比賽的修改先存在這台手機，恢復連線後會自動上傳`:''):n?'⏳ 上傳中…':'☁️ 已和雲端同步'+(ME?`（${ME}）`:'')}
+e.textContent=!CLOUD?'資料儲存在這台裝置的瀏覽器中（尚未設定雲端）。':net=='auth'?'⚠️ 啟動密碼不正確':net=='off'?'⚠️ 連不上雲端'+(n?`，${n} 場比賽的修改先存在這台手機，恢復連線後會自動上傳`:''):n?'⏳ 上傳中…':'☁️ 已和雲端同步'+(ME?`（${ME}）`:'')}
 async function api(action,body){const r=await fetch(API_URL,{method:'POST',body:JSON.stringify(Object.assign({action,key:KEY,cid:CID,name:ME},body||{}))});const j=await r.json();if(j.err=='auth'){net='auth';status()}return j}
 function putGame(data,ver){const k=D.games.findIndex(x=>x.id==data.id);if(k>=0)D.games[k]=data;else D.games.push(data);VER[data.id]=ver;D.games.sort((a,b)=>a.date<b.date?-1:1)}
 // 上傳有修改的比賽（只有記錄員會有修改）
@@ -143,8 +143,8 @@ if(!r.ok){if(r.err=='locked'){LK[id]={by:'?',name:r.lockName,fresh:true};toast(`
 putGame(r.data,r.version);LK[id]={by:CID,name:ME,fresh:true};lastHb=Date.now();saveLocal();render()}
 async function handOver(){await push();if(DIRTY[cur])return toast('還有修改沒上傳完，請等網路恢復再交出');
 try{await api('unlock',{id:cur})}catch(e){return toast('連不上雲端，請確認網路後再試')}LK[cur]={};render()}
-function vLogin(){$('#nav').innerHTML='';$('#v').innerHTML=`<div class="card"><b>加入球隊記錄</b><p class="mu" style="margin:6px 0 10px">${net=='auth'?'通關密語不正確，請重新輸入。':'第一次使用，請輸入球隊的通關密語和你的名字。記錄比賽時，其他人會看到是誰在記錄。'}</p><div class="row"><input id="lk" placeholder="通關密語" value="${esc(KEY)}"><input id="lm" placeholder="你的名字" value="${esc(ME)}"><button class="p" onclick="login()">開始使用</button></div></div>`}
-async function login(){const k=$('#lk').value.trim(),m=$('#lm').value.trim();if(!k||!m)return toast('通關密語和名字都要填');
+function vLogin(){$('#nav').innerHTML='';$('#v').innerHTML=`<div class="card"><b>加入球隊記錄</b><p class="mu" style="margin:6px 0 10px">${net=='auth'?'啟動密碼不正確，請重新輸入。':'第一次使用，請輸入球隊的啟動密碼和你的名字。記錄比賽時，其他人會看到是誰在記錄。'}</p><div class="row"><input id="lk" placeholder="啟動密碼" value="${esc(KEY)}"><input id="lm" placeholder="你的名字" value="${esc(ME)}"><button class="p" onclick="login()">開始使用</button></div></div>`}
+async function login(){const k=$('#lk').value.trim(),m=$('#lm').value.trim();if(!k||!m)return toast('啟動密碼和名字都要填');
 KEY=k;ME=m;ls('bbkey',k);ls('bbname',m);net='';PV='';$('#v').innerHTML='<div class="card mu">連線中…</div>';await sync();render();if(net=='off')toast('連不上雲端，請確認網路')}
 const cfg=()=>CLOUD?`<div class="card"><b>我的設定</b><div class="row" style="margin-top:8px"><input id="cm" value="${esc(ME)}" placeholder="你的名字"><button class="p" onclick="setMe()">更新名字</button><button class="g" onclick="KEY='';ls('bbkey','');render()">登出這台裝置</button></div></div>`:'';
 function setMe(){const m=$('#cm').value.trim();if(m){ME=m;ls('bbname',m);status();toast('名字已更新')}}
